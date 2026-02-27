@@ -16,8 +16,9 @@ public class Main {
             System.out.println("1. Square Root (√x)");
             System.out.println("2. Factorial (x!)");
             System.out.println("3. Natural Logarithm (ln(x))");
-            System.out.println("4. Exit");
-            System.out.print("Enter your choice (1-4): ");
+            System.out.println("4. Power Function (x^b)");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice (1-5): ");
 
             try {
                 choice = scanner.nextInt();
@@ -39,10 +40,17 @@ public class Main {
                         System.out.println("Result (ln(" + num3 + ")): " + calc.naturalLog(num3));
                         break;
                     case 4:
+                        System.out.print("Enter the base (x): ");
+                        double base = scanner.nextDouble();
+                        System.out.print("Enter the exponent (b): ");
+                        double exponent = scanner.nextDouble();
+                        System.out.println("Result (" + base + "^" + exponent + "): " + calc.power(base, exponent));
+                        break;
+                    case 5:
                         System.out.println("Exiting Calculator. Goodbye!");
                         break;
                     default:
-                        System.out.println("Invalid choice! Please select an option from 1 to 4.");
+                        System.out.println("Invalid choice! Please select an option from 1 to 5.");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Error: Invalid input format. Please enter a valid number.");
@@ -51,7 +59,7 @@ public class Main {
                 System.out.println("Error: " + e.getMessage());
             }
 
-        } while (choice != 4);
+        } while (choice != 5);
 
         scanner.close();
     }

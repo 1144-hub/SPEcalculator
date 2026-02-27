@@ -29,4 +29,9 @@ public class Calculator {
         }
         return Math.log(x);
     }
+
+    // 4. Power function (x^b)
+    public double power(double base, double exponent) {
+        return Math.pow(base, exponent);
+    }
 }
