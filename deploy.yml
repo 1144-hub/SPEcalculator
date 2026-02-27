@@ -1,0 +1,36 @@
+---
+- name: Deploy Scientific Calculator via Docker
+  hosts: local
+  gather_facts: false
+
+  vars:
+    # Your Docker Hub image
+    image_name: "goyalsarthak/scientific-calculator:v1"
+    # Name for the running container
+    container_name: "scientific-calculator-app"
+
+  tasks:
+    - name: Pull the latest Docker image from Docker Hub
+      command: docker pull {{ image_name }}
+      register: pull_result
+
+    - name: Display Docker Pull Output
+      debug:
+        var: pull_result.stdout_lines
+
+    - name: Stop any existing container (if it exists)
+      command: docker stop {{ container_name }}
+      ignore_errors: yes
+
+    - name: Remove any existing container (if it exists)
+      command: docker rm {{ container_name }}
+      ignore_errors: yes
+
+    - name: Create the container (ready for interactive use)
+      # docker create deploys the container but waits to start it until the user connects
+      # -i (interactive) and -t (tty) are required for the CLI menu
+      command: docker create -it --name {{ container_name }} {{ image_name }}
+
+    - name: Deployment Success Message
+      debug:
+        msg: "Deployment successful! Container is ready. To launch the calculator, run: docker start -i {{ container_name }}"
