@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "goyalsarthak/scientific-calculator:v1"
-        DOCKER_HUB_CREDS = credentials('dockerhub-creds')
+        PATH = "/usr/local/bin:/opt/homebrew/bin:/bin:/usr/bin:${env.PATH}"
     }
 
     stages {
@@ -35,8 +35,10 @@ pipeline {
         stage('Docker Push') {
             steps {
                 echo 'Logging into Docker Hub and pushing image...'
-                sh "echo $DOCKER_HUB_CREDS_PSW | docker login -u $DOCKER_HUB_CREDS_USR --password-stdin"
-                sh "docker push ${DOCKER_IMAGE}"
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                    sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
+                    sh "docker push ${DOCKER_IMAGE}"
+                }
             }
         }
     }
