@@ -9,9 +9,10 @@
     # Name for the running container
     container_name: "scientific-calculator-app"
 
-  # FIX: Inject the macOS paths so the SSH session can find the 'docker' binary
+  # FIX: Inject the macOS paths and bypass macOS Keychain for headless SSH session
   environment:
     PATH: "/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+    DOCKER_CONFIG: "/tmp"
 
   tasks:
     - name: Pull the latest Docker image from Docker Hub
