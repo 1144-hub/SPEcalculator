@@ -9,14 +9,26 @@
     # Name for the running container
     container_name: "scientific-calculator-app"
 
-  # FIX: Inject the macOS paths and bypass macOS Keychain for headless SSH session
+  # Ensure Ansible can find the docker binary via SSH
   environment:
     PATH: "/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-    DOCKER_CONFIG: "/tmp"
 
   tasks:
+    - name: Create isolated Docker config directory to bypass Keychain
+      file:
+        path: "/tmp/isolated_docker"
+        state: directory
+
+    - name: Explicitly disable macOS Keychain credential store
+      copy:
+        dest: "/tmp/isolated_docker/config.json"
+        content: '{"credsStore": ""}'
+
     - name: Pull the latest Docker image from Docker Hub
       command: docker pull {{ image_name }}
+      environment:
+        # Point specifically to our isolated config file
+        DOCKER_CONFIG: "/tmp/isolated_docker"
       register: pull_result
 
     - name: Display Docker Pull Output
