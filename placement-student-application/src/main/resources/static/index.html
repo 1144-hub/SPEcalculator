@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Student Application</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #059669;
+            --danger: #dc2626;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --radius: 8px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); min-height: 100vh; padding: 2rem; color: var(--gray-900); }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { font-size: 1.75rem; margin-bottom: 1.5rem; color: var(--primary); }
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .tab { padding: 0.5rem 1rem; border: none; background: var(--gray-200); border-radius: var(--radius); cursor: pointer; font-weight: 500; }
+        .tab.active { background: var(--primary); color: white; }
+        .tab:hover:not(.active) { background: #d1d5db; }
+        .panel { display: none; background: white; padding: 1.5rem; border-radius: var(--radius); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .panel.active { display: block; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 0.25rem; font-size: 0.875rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid var(--gray-200); border-radius: var(--radius); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 500; font-size: 0.875rem; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-secondary { background: var(--gray-200); color: var(--gray-700); }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--gray-200); }
+        th { font-weight: 600; background: var(--gray-100); }
+        .badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; }
+        .badge-success { background: #d1fae5; color: var(--success); }
+        .badge-danger { background: #fee2e2; color: var(--danger); }
+        .message { padding: 0.75rem; border-radius: var(--radius); margin-bottom: 1rem; }
+        .message-success { background: #d1fae5; color: var(--success); }
+        .message-error { background: #fee2e2; color: var(--danger); }
+        .rules { margin-top: 1rem; font-size: 0.875rem; }
+        .rule { padding: 0.5rem; margin-bottom: 0.25rem; border-radius: 4px; }
+        .rule.pass { background: #d1fae5; }
+        .rule.fail { background: #fee2e2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Placement Student Application</h1>
+        <div class="tabs">
+            <button class="tab active" data-tab="students">Students</button>
+            <button class="tab" data-tab="offers">Placement Offers</button>
+            <button class="tab" data-tab="cv">CV Upload</button>
+            <button class="tab" data-tab="eligibility">Check Eligibility</button>
+            <button class="tab" data-tab="applications">Applications</button>
+        </div>
+
+        <div id="students" class="panel active">
+            <h2>Students</h2>
+            <form id="studentForm" class="form-row">
+                <div class="form-group"><label>Name</label><input type="text" id="studentName" required></div>
+                <div class="form-group"><label>Email</label><input type="email" id="studentEmail" required></div>
+                <div class="form-group"><label>Domain</label><input type="text" id="studentDomain" placeholder="e.g. Computer Science" required></div>
+                <div class="form-group"><label>Specialization</label><input type="text" id="studentSpec" placeholder="e.g. AI/ML" required></div>
+                <div class="form-group"><label>Credits Completed</label><input type="number" id="studentCredits" min="0" required></div>
+                <div class="form-group"><label>CGPA (0-10)</label><input type="number" id="studentGrade" min="0" max="10" step="0.01" required></div>
+            </form>
+            <button class="btn btn-primary" onclick="addStudent()">Add Student</button>
+            <table id="studentsTable"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Domain</th><th>Specialization</th><th>Credits</th><th>CGPA</th></tr></thead><tbody></tbody></table>
+        </div>
+
+        <div id="offers" class="panel">
+            <h2>Placement Offers</h2>
+            <form id="offerForm" class="form-row">
+                <div class="form-group"><label>Company Name</label><input type="text" id="offerCompany" required></div>
+                <div class="form-group"><label>Required Domain</label><input type="text" id="offerDomain" placeholder="e.g. Computer Science" required></div>
+                <div class="form-group"><label>Required Specialization (optional)</label><input type="text" id="offerSpec" placeholder="e.g. AI/ML"></div>
+                <div class="form-group"><label>Min Credits</label><input type="number" id="offerCredits" min="0" required></div>
+                <div class="form-group"><label>Min CGPA</label><input type="number" id="offerGrade" min="0" max="10" step="0.01" required></div>
+                <div class="form-group"><label>Description</label><input type="text" id="offerDesc" placeholder="Optional"></div>
+            </form>
+            <button class="btn btn-primary" onclick="addOffer()">Add Offer</button>
+            <table id="offersTable"><thead><tr><th>ID</th><th>Company</th><th>Domain</th><th>Specialization</th><th>Min Credits</th><th>Min CGPA</th></tr></thead><tbody></tbody></table>
+        </div>
+
+        <div id="cv" class="panel">
+            <h2>Upload CV</h2>
+            <div class="form-group">
+                <label>Student</label>
+                <select id="cvStudentId"></select>
+            </div>
+            <div class="form-group">
+                <label>CV File (PDF, DOC, DOCX)</label>
+                <input type="file" id="cvFile" accept=".pdf,.doc,.docx">
+            </div>
+            <button class="btn btn-primary" onclick="uploadCV()">Upload CV</button>
+        </div>
+
+        <div id="eligibility" class="panel">
+            <h2>Check Eligibility</h2>
+            <div class="form-row">
+                <div class="form-group"><label>Student</label><select id="eligStudentId"></select></div>
+                <div class="form-group"><label>Placement Offer</label><select id="eligOfferId"></select></div>
+            </div>
+            <button class="btn btn-primary" onclick="checkEligibility()">Check Eligibility</button>
+            <div id="eligibilityResult"></div>
+        </div>
+
+        <div id="applications" class="panel">
+            <h2>Submit Application</h2>
+            <div class="form-row">
+                <div class="form-group"><label>Student</label><select id="appStudentId"></select></div>
+                <div class="form-group"><label>Placement Offer</label><select id="appOfferId"></select></div>
+                <div class="form-group"><label>CV (optional)</label><select id="appCvId"><option value="">No CV</option></select></div>
+            </div>
+            <button class="btn btn-primary" onclick="submitApplication()">Submit Application</button>
+            <h3 style="margin-top:1.5rem">Applications by Student</h3>
+            <div class="form-group"><label>Student</label><select id="listStudentId"></select></div>
+            <button class="btn btn-secondary" onclick="listApplications()">List Applications</button>
+            <table id="applicationsTable"><thead><tr><th>ID</th><th>Student</th><th>Company</th><th>Status</th><th>Applied At</th></tr></thead><tbody></tbody></table>
+        </div>
+    </div>
+
+    <script>
+        const API = '/api';
+
+        document.querySelectorAll('.tab').forEach(t => {
+            t.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+                document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+                t.classList.add('active');
+                document.getElementById(t.dataset.tab).classList.add('active');
+                if (t.dataset.tab === 'eligibility') loadEligibilityOptions();
+                if (t.dataset.tab === 'applications') loadApplicationOptions();
+            });
+        });
+
+        async function loadStudents() {
+            const res = await fetch(`${API}/students`);
+            return res.ok ? res.json() : [];
+        }
+
+        async function loadOffers() {
+            const res = await fetch(`${API}/placement-offers`);
+            return res.ok ? res.json() : [];
+        }
+
+        function populateStudentSelect(sel) {
+            loadStudents().then(students => {
+                sel.innerHTML = students.map(s => `<option value="${s.id}">${s.name} (${s.email})</option>`).join('');
+            });
+        }
+
+        function populateOfferSelect(sel) {
+            loadOffers().then(offers => {
+                sel.innerHTML = offers.map(o => `<option value="${o.id}">${o.companyName} - ${o.requiredDomain}</option>`).join('');
+            });
+        }
+
+        async function addStudent() {
+            const data = {
+                name: document.getElementById('studentName').value,
+                email: document.getElementById('studentEmail').value,
+                domain: document.getElementById('studentDomain').value,
+                specialization: document.getElementById('studentSpec').value,
+                creditsCompleted: parseInt(document.getElementById('studentCredits').value),
+                cumulativeGrade: parseFloat(document.getElementById('studentGrade').value)
+            };
+            const res = await fetch(`${API}/students`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            const body = await res.json();
+            if (res.ok) { document.getElementById('studentForm').reset(); refreshStudents(); alert('Student added!'); }
+            else alert('Error: ' + (body.error || body.message || res.status));
+        }
+
+        async function addOffer() {
+            const data = {
+                companyName: document.getElementById('offerCompany').value,
+                requiredDomain: document.getElementById('offerDomain').value,
+                requiredSpecialization: document.getElementById('offerSpec').value || null,
+                minCreditsRequired: parseInt(document.getElementById('offerCredits').value),
+                minCumulativeGradeRequired: parseFloat(document.getElementById('offerGrade').value),
+                description: document.getElementById('offerDesc').value || null
+            };
+            const res = await fetch(`${API}/placement-offers`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            const body = await res.json();
+            if (res.ok) { document.getElementById('offerForm').reset(); refreshOffers(); alert('Offer added!'); }
+            else alert('Error: ' + (body.error || body.message || res.status));
+        }
+
+        async function refreshStudents() {
+            const students = await loadStudents();
+            const tbody = document.querySelector('#studentsTable tbody');
+            tbody.innerHTML = students.map(s => `<tr><td>${s.id}</td><td>${s.name}</td><td>${s.email}</td><td>${s.domain}</td><td>${s.specialization}</td><td>${s.creditsCompleted}</td><td>${s.cumulativeGrade}</td></tr>`).join('');
+            populateStudentSelect(document.getElementById('cvStudentId'));
+            populateStudentSelect(document.getElementById('eligStudentId'));
+            populateStudentSelect(document.getElementById('appStudentId'));
+            populateStudentSelect(document.getElementById('listStudentId'));
+        }
+
+        async function refreshOffers() {
+            const offers = await loadOffers();
+            const tbody = document.querySelector('#offersTable tbody');
+            tbody.innerHTML = offers.map(o => `<tr><td>${o.id}</td><td>${o.companyName}</td><td>${o.requiredDomain}</td><td>${o.requiredSpecialization || '-'}</td><td>${o.minCreditsRequired}</td><td>${o.minCumulativeGradeRequired}</td></tr>`).join('');
+            populateOfferSelect(document.getElementById('eligOfferId'));
+            populateOfferSelect(document.getElementById('appOfferId'));
+        }
+
+        async function uploadCV() {
+            const studentId = document.getElementById('cvStudentId').value;
+            const file = document.getElementById('cvFile').files[0];
+            if (!studentId || !file) { alert('Select student and file'); return; }
+            const fd = new FormData();
+            fd.append('file', file);
+            const res = await fetch(`${API}/students/${studentId}/cv`, { method: 'POST', body: fd });
+            const body = await res.json();
+            if (res.ok) { document.getElementById('cvFile').value = ''; alert('CV uploaded!'); }
+            else alert('Error: ' + (body.error || body.message || res.status));
+        }
+
+        function loadEligibilityOptions() {
+            populateStudentSelect(document.getElementById('eligStudentId'));
+            populateOfferSelect(document.getElementById('eligOfferId'));
+        }
+
+        async function checkEligibility() {
+            const studentId = document.getElementById('eligStudentId').value;
+            const offerId = document.getElementById('eligOfferId').value;
+            if (!studentId || !offerId) { alert('Select student and offer'); return; }
+            const res = await fetch(`${API}/eligibility/check?studentId=${studentId}&offerId=${offerId}`);
+            const result = await res.json();
+            const div = document.getElementById('eligibilityResult');
+            if (res.ok) {
+                div.innerHTML = `
+                    <div class="message ${result.eligible ? 'message-success' : 'message-error'}">
+                        <strong>${result.eligible ? 'Eligible' : 'Not Eligible'}</strong>: ${result.summary}
+                    </div>
+                    <div class="rules">
+                        ${result.ruleResults.map(r => `<div class="rule ${r.passed ? 'pass' : 'fail'}"><strong>${r.ruleName}</strong>: ${r.reason}</div>`).join('')}
+                    </div>
+                `;
+            } else {
+                div.innerHTML = `<div class="message message-error">${result.error || 'Error checking eligibility'}</div>`;
+            }
+        }
+
+        function loadApplicationOptions() {
+            populateStudentSelect(document.getElementById('appStudentId'));
+            populateOfferSelect(document.getElementById('appOfferId'));
+            populateStudentSelect(document.getElementById('listStudentId'));
+        }
+
+        async function loadCVsForStudent(studentId) {
+            if (!studentId) { document.getElementById('appCvId').innerHTML = '<option value="">No CV</option>'; return; }
+            const res = await fetch(`${API}/students/${studentId}/cv`);
+            const cvs = res.ok ? await res.json() : [];
+            document.getElementById('appCvId').innerHTML = '<option value="">No CV</option>' + cvs.map(c => `<option value="${c.id}">${c.originalFileName}</option>`).join('');
+        }
+
+        document.getElementById('appStudentId').addEventListener('change', () => loadCVsForStudent(document.getElementById('appStudentId').value));
+
+        async function submitApplication() {
+            const studentId = document.getElementById('appStudentId').value;
+            const offerId = document.getElementById('appOfferId').value;
+            const cvId = document.getElementById('appCvId').value;
+            if (!studentId || !offerId) { alert('Select student and offer'); return; }
+            const data = { studentId: parseInt(studentId), offerId: parseInt(offerId), cvMetadataId: cvId ? parseInt(cvId) : null };
+            const res = await fetch(`${API}/applications`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            const body = await res.json();
+            if (res.ok) { alert('Application submitted!'); listApplications(); }
+            else alert('Error: ' + (body.error || body.message || res.status));
+        }
+
+        async function listApplications() {
+            const studentId = document.getElementById('listStudentId').value;
+            if (!studentId) { alert('Select a student'); return; }
+            const res = await fetch(`${API}/applications/student/${studentId}`);
+            const apps = res.ok ? await res.json() : [];
+            const tbody = document.querySelector('#applicationsTable tbody');
+            tbody.innerHTML = apps.map(a => `<tr><td>${a.id}</td><td>${a.studentName}</td><td>${a.companyName}</td><td>${a.status}</td><td>${a.appliedAt}</td></tr>`).join('');
+        }
+
+        refreshStudents();
+        refreshOffers();
+    </script>
+</body>
+</html>

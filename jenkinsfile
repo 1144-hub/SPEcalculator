@@ -6,8 +6,12 @@ pipeline {
     }
 
     environment {
+        // Your Docker Hub image repository
         DOCKER_IMAGE = "goyalsarthak/scientific-calculator:v1"
+        // Add macOS default binary paths to Jenkins so it can find 'docker' and 'ansible'
         PATH = "/usr/local/bin:/opt/homebrew/bin:/bin:/usr/bin:${env.PATH}"
+        // Replace this with your actual email address
+        EMAIL_TO = "goyalsarthak2001@gmail.com"
     }
 
     stages {
@@ -21,6 +25,7 @@ pipeline {
         stage('Build & Test') {
             steps {
                 echo 'Running Maven build and unit tests...'
+                // Builds the JAR and runs tests for \sqrt{x}, x!, \ln(x), and x^b
                 sh 'mvn clean package'
             }
         }
@@ -40,6 +45,31 @@ pipeline {
                     sh "docker push ${DOCKER_IMAGE}"
                 }
             }
+        }
+
+        // NEW STAGE: Ansible Deployment
+        stage('Deploy with Ansible') {
+            steps {
+                echo 'Deploying application using Ansible playbook...'
+                // Jenkins will execute your local deploy.yml playbook
+                sh 'ansible-playbook -i inventory.ini deploy.yml'
+            }
+        }
+    }
+
+    // NEW BLOCK: Post-build Email Notifications
+    post {
+        success {
+            echo 'Pipeline succeeded. Sending success email...'
+            mail to: "${EMAIL_TO}",
+                 subject: "SUCCESS: Jenkins Pipeline - Scientific Calculator",
+                 body: "Good news! The Jenkins pipeline for the Scientific Calculator completed successfully.\n\nThe Docker image was built, pushed to Docker Hub, and successfully deployed via Ansible.\nCheck console output at: ${env.BUILD_URL}"
+        }
+        failure {
+            echo 'Pipeline failed. Sending failure email...'
+            mail to: "${EMAIL_TO}",
+                 subject: "FAILURE: Jenkins Pipeline - Scientific Calculator",
+                 body: "Attention: The Jenkins pipeline for the Scientific Calculator failed.\n\nPlease check the console output to debug the issue: ${env.BUILD_URL}"
         }
     }
 }
