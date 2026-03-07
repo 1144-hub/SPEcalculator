@@ -22,7 +22,6 @@ public class Calculator {
         return fact;
     }
 
-    // 3. Natural Logarithm function (ln(x))
     public double naturalLog(double x) {
         if (x <= 0) {
             throw new IllegalArgumentException("Natural logarithm is only defined for positive numbers.");
