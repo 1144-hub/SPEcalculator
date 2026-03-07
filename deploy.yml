@@ -1,7 +1,6 @@
 ---
 - name: Deploy Scientific Calculator via Docker
-  hosts: localhost
-  connection: local
+  hosts: local
   gather_facts: false
 
   vars:
@@ -10,7 +9,7 @@
     # Name for the running container
     container_name: "scientific-calculator-app"
 
-  # Ensure Ansible can find the docker binary
+  # Ensure Ansible can find the docker binary via SSH on macOS
   environment:
     PATH: "/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
@@ -28,10 +27,13 @@
     - name: Pull the latest Docker image from Docker Hub
       command: docker --config /tmp/isolated_docker pull {{ image_name }}
       register: pull_result
+      # Adding ignore_errors as a fallback so it uses the local cache if macOS security still blocks it
+      ignore_errors: yes
 
     - name: Display Docker Pull Output
       debug:
         var: pull_result.stdout_lines
+      ignore_errors: yes
 
     - name: Stop any existing container (if it exists)
       command: docker stop {{ container_name }}
