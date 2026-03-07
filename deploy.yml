@@ -1,6 +1,7 @@
 ---
 - name: Deploy Scientific Calculator via Docker
-  hosts: local
+  hosts: localhost
+  connection: local
   gather_facts: false
 
   vars:
@@ -9,7 +10,7 @@
     # Name for the running container
     container_name: "scientific-calculator-app"
 
-  # Ensure Ansible can find the docker binary via SSH
+  # Ensure Ansible can find the docker binary
   environment:
     PATH: "/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
