@@ -6,11 +6,8 @@ pipeline {
     }
 
     environment {
-        // Your Docker Hub image repository
         DOCKER_IMAGE = "goyalsarthak/scientific-calculator:v1"
-        // Add macOS default binary paths to Jenkins so it can find 'docker' and 'ansible'
         PATH = "/usr/local/bin:/opt/homebrew/bin:/bin:/usr/bin:${env.PATH}"
-        // Replace this with your actual email address
         EMAIL_TO = "goyalsarthak2001@gmail.com"
     }
 
@@ -25,7 +22,6 @@ pipeline {
         stage('Build & Test') {
             steps {
                 echo 'Running Maven build and unit tests...'
-                // Builds the JAR and runs tests for \sqrt{x}, x!, \ln(x), and x^b
                 sh 'mvn clean package'
             }
         }
@@ -47,17 +43,15 @@ pipeline {
             }
         }
 
-        // NEW STAGE: Ansible Deployment
         stage('Deploy with Ansible') {
             steps {
                 echo 'Deploying application using Ansible playbook...'
-                // Jenkins will execute your local deploy.yml playbook
                 sh 'ansible-playbook -i inventory.ini deploy.yml'
             }
         }
     }
 
-    // NEW BLOCK: Post-build Email Notifications
+
     post {
         success {
             echo 'Pipeline succeeded. Sending success email...'

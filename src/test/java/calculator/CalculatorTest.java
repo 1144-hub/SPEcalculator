@@ -37,7 +37,6 @@ public class CalculatorTest {
         assertThrows(IllegalArgumentException.class, () -> calc.factorial(-5));
     }
 
-    // --- Tests for Natural Logarithm (ln(x)) ---
     @Test
     public void testNaturalLogPositive() {
         assertEquals(1.0, calc.naturalLog(Math.E), 0.001); // ln(e) = 1
