@@ -49,7 +49,6 @@ public class CalculatorTest {
         assertThrows(IllegalArgumentException.class, () -> calc.naturalLog(-10.0));
     }
 
-    // --- Tests for Power Function (x^b) ---
     @Test
     public void testPower() {
         assertEquals(8.0, calc.power(2.0, 3.0), 0.001); // 2^3 = 8
